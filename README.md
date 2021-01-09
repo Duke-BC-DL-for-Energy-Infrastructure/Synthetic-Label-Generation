@@ -9,4 +9,3 @@ The only script that should be edited and used is preprocess_syn_xview_backgroun
 * syn_annos_dir
 * syn_box_dir
 * syn_txt_dir
-DO NOT edit any other files than preprocess_syn_xview_background_gt_labels.
