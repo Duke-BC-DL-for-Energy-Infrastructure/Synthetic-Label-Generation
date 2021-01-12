@@ -54,19 +54,19 @@ def merge_clean_origin_syn_image_files(ct, st, dt):
         shutil.copy(lbl, des_lbl_path)
 
 
-def group_object_annotation_and_draw_bbox(dt, geographic_region, px_thresh=20, whr_thres=4):
-    '''
+def group_object_annotation_and_draw_bbox(dt, px_thresh=20, whr_thres=4):
+    """ Takes black and white images from syn_data_dir and creates labels, saving them in syn_annos_dir
+    Also plots the bboxs on the black and white images and saves those new images in syn_box_dir
+
     px_thres: threshold for the length of edge lenght of b-box (at the margin)
     whr_thres: threshold for width/height or height/width
     group annotation files, generate bbox for each object, and draw bbox for each ground truth files
-    '''
+    """
+
     step = syn_args.tile_size * syn_args.resolution
-    #folder_name = 'gt images/deserts'
-    #lbl_path = os.path.join(syn_args.syn_data_dir, folder_name)
-    lbl_path = os.path.join(syn_args.syn_data_dir, geographic_region)
+    lbl_path = syn_args.syn_data_dir # This path should point to the folder containing all of the black-and-white label images
     print('lbl_path', lbl_path)
-    txt_folder_name = '{}'.format(geographic_region)
-    save_txt_path = os.path.join(syn_args.syn_annos_dir, txt_folder_name)
+    save_txt_path = syn_args.syn_annos_dir
     if not os.path.exists(save_txt_path):
         os.makedirs(save_txt_path)
     else:
@@ -77,8 +77,7 @@ def group_object_annotation_and_draw_bbox(dt, geographic_region, px_thresh=20, w
                                     link_r=syn_args.link_r, px_thresh=px_thresh, whr_thres=whr_thres)
     gt_files = np.sort(glob.glob(os.path.join(lbl_path, '*{}'.format(IMG_FORMAT))))
     print(gt_files)
-    bbox_folder_name = '{}'.format(geographic_region)
-    save_bbx_path = os.path.join(syn_args.syn_box_dir, bbox_folder_name)
+    save_bbx_path = syn_args.syn_box_dir
     if not os.path.exists(save_bbx_path):
         os.makedirs(save_bbx_path)
     else:
@@ -93,6 +92,10 @@ def group_object_annotation_and_draw_bbox(dt, geographic_region, px_thresh=20, w
 
 
 def draw_bbx_on_rgb_images(dt, px_thresh=20, whr_thres=4):
+    """ Draws the bounding boxes on the rgb images
+
+    """
+
     step = syn_args.tile_size * syn_args.resolution
     img_folder_name = '{}_all_images_step{}'.format(dt, step)
     img_path = os.path.join(syn_args.syn_data_dir, img_folder_name)
@@ -118,17 +121,17 @@ def draw_bbx_on_rgb_images(dt, px_thresh=20, whr_thres=4):
 
 
 
-def create_paths(seed=17, comment='', pxwhr='px5whr6'):
-    """ Generates paths for the images and labels
+def create_paths(seed=17, comment=''):
+    """ Generates paths for the images and labels so that they can be copy and pasted into the paths for the training data
+        Collects the images from syn_data_dir, and writes
 
     """
 
-    lbl_path = syn_args.syn_data_dir
-    all_syn_files = np.sort(glob.glob(lbl_path + '/*/*.png'))
+    all_syn_files = np.sort(glob.glob(syn_args.syn_data_dir + '/*/*.png'))
     np.random.shuffle(all_syn_files)
     data_txt_dir = syn_args.syn_txt_dir
-    img_paths = open(os.path.join(data_txt_dir, '{}_img_seed{}.txt'.format(comment, seed)), 'w')
-    lbl_paths = open(os.path.join(data_txt_dir, '{}_lbl_seed{}.txt'.format(comment, seed)), 'w')
+    img_paths = open(os.path.join(data_txt_dir, 'synthetic_image_paths.txt', 'w')
+    lbl_paths = open(os.path.join(data_txt_dir, 'synthetic_label_paths.txt', 'w')
     img_dir = '../data/synthetic_images/'
     lbl_dir = '../data/synthetic_labels/'
     for image in all_syn_files:
@@ -138,6 +141,9 @@ def create_paths(seed=17, comment='', pxwhr='px5whr6'):
     lbl_paths.close()
 
 def split_trn_val_for_syn_and_real(seed=17, comment='wnd_syn_real', pxwhr='px5whr6', real_img_dir='', real_lbl_dir=''):
+    """ Splits the synthetic and real data. Not really useful since the synthetic data should just go into the training set
+
+    """
 
     step = syn_args.tile_size * syn_args.resolution
     all_syn_files = np.sort(glob.glob(os.path.join(syn_args.syn_data_dir, 'color_all_images_step{}'.format(step), '*.png')))
@@ -185,11 +191,11 @@ def get_args(cmt=''):
                         help="Path to folder containing the black and white ground truth synthetic annotations",
                         default='C:/Users/Tyler Feldman/Box/Bass Connections 2020-2021/Wind Turbine Object Detection Dataset/synthetic_wind_turbine_images/synthetic_image_labels_Oct28/')
     parser.add_argument("--syn_annos_dir", type=str, default='C:/Users/Tyler Feldman/Documents/Fall 2020 Classes/BassConnections/synthetic data/labels',
-                        help="Directory where it will output the labels")
+                        help="Directory where it will output the labels for each image")
     parser.add_argument("--syn_box_dir", type=str, default='C:/Users/Tyler Feldman/Documents/Fall 2020 Classes/BassConnections/synthetic data/bbox',
                         help="Directory where it will output any bbox images. This doesn't matter unless you're running draw_bbx_on_rgb_images")
     parser.add_argument("--syn_txt_dir", type=str, default='C:/Users/Tyler Feldman/Documents/Fall 2020 Classes/BassConnections/synthetic data/labels',
-                        help="syn related txt files")
+                        help="Directory where it will output the image/label paths along with other .txt files that reference the raw data (images/labels)")
 
 
     # Don't need to worry about these arguments
@@ -217,23 +223,26 @@ def get_args(cmt=''):
 
 if __name__ == '__main__':
 
-
-
     '''
     generate txt and bbox for syn_background data
     bbox annotation meet certain conditions: px_thres, whr_thres
     '''
-    
-    '''
+    # px_thres: threshold for the length of edge lenght of b-box (at the margin)
+    # whr_thres: threshold for width/height or height/width
     px_thres= 30 # 23
     whr_thres= 6 # 3
     display_types = ['color'] # 'mixed'
-    cmt = ''
+    cmt = 'wnd_syn'
     syn_args = get_args(cmt)
     for dt in display_types:
-        group_object_annotation_and_draw_bbox(dt, 'water', px_thres, whr_thres)'''
+        group_object_annotation_and_draw_bbox(dt, px_thres, whr_thres)
 
     
+    '''
+    create paths for the syn data to copy and paste into other txt files
+    '''
+    create_paths(comment=cmt)
+
     '''
     draw bbox on rgb images for syn_background data
     '''
@@ -246,12 +255,5 @@ if __name__ == '__main__':
     syn_args = get_args(cmt)
     for dt in display_types:
         draw_bbx_on_rgb_images(dt, px_thres, whr_thres)'''
-    
-    
-    '''
-    create paths for the syn data to copy and paste into other txt files
-    '''
-    syn_args = get_args('wnd_syn')
-    create_paths(comment='wnd_syn')
 
 
