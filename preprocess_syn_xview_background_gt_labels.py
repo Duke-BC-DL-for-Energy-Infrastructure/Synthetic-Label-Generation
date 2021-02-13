@@ -76,7 +76,6 @@ def group_object_annotation_and_draw_bbox(dt, px_thresh=20, whr_thres=4):
     gbc.get_object_bbox_after_group(lbl_path, save_txt_path, class_label=0, min_region=syn_args.min_region,
                                     link_r=syn_args.link_r, px_thresh=px_thresh, whr_thres=whr_thres)
     gt_files = np.sort(glob.glob(os.path.join(lbl_path, '*{}'.format(IMG_FORMAT))))
-    print(gt_files)
     save_bbx_path = syn_args.syn_box_dir
     if not os.path.exists(save_bbx_path):
         os.makedirs(save_bbx_path)
@@ -84,7 +83,8 @@ def group_object_annotation_and_draw_bbox(dt, px_thresh=20, whr_thres=4):
         shutil.rmtree(save_bbx_path)
         os.makedirs(save_bbx_path)
     for g in gt_files:
-        gt_name = g.split('/')[-1]
+        gt_name = g.split('\\')[-1]
+        print(gt_name)
         txt_name = gt_name.replace(IMG_FORMAT, TXT_FORMAT)
         txt_file = os.path.join(save_txt_path, txt_name)
         gbc.plot_img_with_bbx(g, txt_file, save_bbx_path)
@@ -130,8 +130,8 @@ def create_paths(seed=17, comment=''):
     all_syn_files = np.sort(glob.glob(syn_args.syn_data_dir + '/*/*.png'))
     np.random.shuffle(all_syn_files)
     data_txt_dir = syn_args.syn_txt_dir
-    img_paths = open(os.path.join(data_txt_dir, 'synthetic_image_paths.txt', 'w')
-    lbl_paths = open(os.path.join(data_txt_dir, 'synthetic_label_paths.txt', 'w')
+    img_paths = open(os.path.join(data_txt_dir, 'synthetic_image_paths.txt'), 'w')
+    lbl_paths = open(os.path.join(data_txt_dir, 'synthetic_label_paths.txt'), 'w')
     img_dir = '../data/synthetic_images/'
     lbl_dir = '../data/synthetic_labels/'
     for image in all_syn_files:
@@ -189,12 +189,12 @@ def get_args(cmt=''):
     parser = argparse.ArgumentParser()
     parser.add_argument("--syn_data_dir", type=str,
                         help="Path to folder containing the black and white ground truth synthetic annotations",
-                        default='C:/Users/Tyler Feldman/Box/Bass Connections 2020-2021/Wind Turbine Object Detection Dataset/synthetic_wind_turbine_images/synthetic_image_labels_Oct28/')
-    parser.add_argument("--syn_annos_dir", type=str, default='C:/Users/Tyler Feldman/Documents/Fall 2020 Classes/BassConnections/synthetic data/labels',
+                        default=r'C:\Users\Tyler Feldman\Documents\CityEngine\Default Workspace\HeightToBoundingBox\images\synthetic_wind_turbine_images\color_all_annos_step500')
+    parser.add_argument("--syn_annos_dir", type=str, default=r'C:\Users\Tyler Feldman\Documents\Spring 2021 Classes\BassConnections\synthetic data\labels',
                         help="Directory where it will output the labels for each image")
-    parser.add_argument("--syn_box_dir", type=str, default='C:/Users/Tyler Feldman/Documents/Fall 2020 Classes/BassConnections/synthetic data/bbox',
+    parser.add_argument("--syn_box_dir", type=str, default=r'C:/Users/Tyler Feldman/Documents/Spring 2021 Classes/BassConnections/synthetic data/bbox',
                         help="Directory where it will output any bbox images. This doesn't matter unless you're running draw_bbx_on_rgb_images")
-    parser.add_argument("--syn_txt_dir", type=str, default='C:/Users/Tyler Feldman/Documents/Fall 2020 Classes/BassConnections/synthetic data/labels',
+    parser.add_argument("--syn_txt_dir", type=str, default=r'C:\Users\Tyler Feldman\Documents\Spring 2021 Classes\BassConnections\synthetic data\paths',
                         help="Directory where it will output the image/label paths along with other .txt files that reference the raw data (images/labels)")
 
 
@@ -229,6 +229,7 @@ if __name__ == '__main__':
     '''
     # px_thres: threshold for the length of edge lenght of b-box (at the margin)
     # whr_thres: threshold for width/height or height/width
+
     px_thres= 30 # 23
     whr_thres= 6 # 3
     display_types = ['color'] # 'mixed'
@@ -241,19 +242,20 @@ if __name__ == '__main__':
     '''
     create paths for the syn data to copy and paste into other txt files
     '''
-    create_paths(comment=cmt)
+
+    #cmt = 'wnd_syn'
+    #syn_args = get_args(cmt)    
+    #create_paths(comment=cmt)
 
     '''
     draw bbox on rgb images for syn_background data
     '''
-
-    '''
-    px_thres= 5 # 5 # 23 #20 #30
-    whr_thres= 6 # 3
-    display_types = ['color'] # 'mixed'
-    cmt = ''
-    syn_args = get_args(cmt)
-    for dt in display_types:
-        draw_bbx_on_rgb_images(dt, px_thres, whr_thres)'''
+    #px_thres= 30 # 5 # 23 #20 #30
+    #whr_thres= 6 # 3
+    #display_types = ['color'] # 'mixed'
+    #cmt = 'wnd_syn'
+    #syn_args = get_args(cmt)
+    #for dt in display_types:
+    #    draw_bbx_on_rgb_images(dt, px_thres, whr_thres)
 
 
