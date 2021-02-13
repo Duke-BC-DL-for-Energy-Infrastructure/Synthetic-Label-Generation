@@ -127,7 +127,7 @@ def create_paths(seed=17, comment=''):
 
     """
 
-    all_syn_files = np.sort(glob.glob(syn_args.syn_data_dir + '/*/*.png'))
+    all_syn_files = np.sort(glob.glob(syn_args.syn_data_dir + '\\*.png'))
     np.random.shuffle(all_syn_files)
     data_txt_dir = syn_args.syn_txt_dir
     img_paths = open(os.path.join(data_txt_dir, 'synthetic_image_paths.txt'), 'w')
@@ -189,12 +189,12 @@ def get_args(cmt=''):
     parser = argparse.ArgumentParser()
     parser.add_argument("--syn_data_dir", type=str,
                         help="Path to folder containing the black and white ground truth synthetic annotations",
-                        default=r'C:\Users\Tyler Feldman\Documents\CityEngine\Default Workspace\HeightToBoundingBox\images\synthetic_wind_turbine_images\color_all_annos_step500')
-    parser.add_argument("--syn_annos_dir", type=str, default=r'C:\Users\Tyler Feldman\Documents\Spring 2021 Classes\BassConnections\synthetic data\labels',
+                        default=r'C:\Users\Tyler Feldman\Box\Bass Connections 2020-2021\Wind Turbine Object Detection Dataset\Synthetic Imagery\New Distribution\EM\color_all_annos_step608')
+    parser.add_argument("--syn_annos_dir", type=str, default=r'C:\Users\Tyler Feldman\Box\Bass Connections 2020-2021\Wind Turbine Object Detection Dataset\Synthetic Imagery\New Distribution\EM\labels',
                         help="Directory where it will output the labels for each image")
-    parser.add_argument("--syn_box_dir", type=str, default=r'C:/Users/Tyler Feldman/Documents/Spring 2021 Classes/BassConnections/synthetic data/bbox',
+    parser.add_argument("--syn_box_dir", type=str, default=r'C:\Users\Tyler Feldman\Box\Bass Connections 2020-2021\Wind Turbine Object Detection Dataset\Synthetic Imagery\New Distribution\EM\bbox',
                         help="Directory where it will output any bbox images. This doesn't matter unless you're running draw_bbx_on_rgb_images")
-    parser.add_argument("--syn_txt_dir", type=str, default=r'C:\Users\Tyler Feldman\Documents\Spring 2021 Classes\BassConnections\synthetic data\paths',
+    parser.add_argument("--syn_txt_dir", type=str, default=r'C:\Users\Tyler Feldman\Box\Bass Connections 2020-2021\Wind Turbine Object Detection Dataset\Synthetic Imagery\New Distribution\EM',
                         help="Directory where it will output the image/label paths along with other .txt files that reference the raw data (images/labels)")
 
 
@@ -229,7 +229,7 @@ if __name__ == '__main__':
     '''
     # px_thres: threshold for the length of edge lenght of b-box (at the margin)
     # whr_thres: threshold for width/height or height/width
-
+    
     px_thres= 30 # 23
     whr_thres= 6 # 3
     display_types = ['color'] # 'mixed'
