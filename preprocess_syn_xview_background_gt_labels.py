@@ -187,16 +187,17 @@ def split_trn_val_for_syn_and_real(seed=17, comment='wnd_syn_real', pxwhr='px5wh
 
 def get_args(cmt=''):
     parser = argparse.ArgumentParser()
+
+    # Important arguments
     parser.add_argument("--syn_data_dir", type=str,
                         help="Path to folder containing the black and white ground truth synthetic annotations",
-                        default=r'C:\Users\Tyler Feldman\Box\Bass Connections 2020-2021\Wind Turbine Object Detection Dataset\Synthetic Imagery\New Distribution\EM\color_all_annos_step608')
-    parser.add_argument("--syn_annos_dir", type=str, default=r'C:\Users\Tyler Feldman\Box\Bass Connections 2020-2021\Wind Turbine Object Detection Dataset\Synthetic Imagery\New Distribution\EM\labels',
+                        default=r'C:\Users\sarah\Documents\TYLER\Bass\SyntheticData\EM Redo\color_all_annos_step608')
+    parser.add_argument("--syn_annos_dir", type=str, default=r'C:\Users\sarah\Documents\TYLER\Bass\SyntheticData\EM Redo\labels',
                         help="Directory where it will output the labels for each image")
-    parser.add_argument("--syn_box_dir", type=str, default=r'C:\Users\Tyler Feldman\Box\Bass Connections 2020-2021\Wind Turbine Object Detection Dataset\Synthetic Imagery\New Distribution\EM\bbox',
+    parser.add_argument("--syn_box_dir", type=str, default=r'C:\Users\sarah\Documents\TYLER\Bass\SyntheticData\EM Redo\bbox',
                         help="Directory where it will output any bbox images. This doesn't matter unless you're running draw_bbx_on_rgb_images")
-    parser.add_argument("--syn_txt_dir", type=str, default=r'C:\Users\Tyler Feldman\Box\Bass Connections 2020-2021\Wind Turbine Object Detection Dataset\Synthetic Imagery\New Distribution\EM',
+    parser.add_argument("--syn_txt_dir", type=str, default=r'C:\Users\sarah\Documents\TYLER\Bass\SyntheticData\EM Redo\txt',
                         help="Directory where it will output the image/label paths along with other .txt files that reference the raw data (images/labels)")
-
 
     # Don't need to worry about these arguments
     parser.add_argument("--syn_display_type", type=str, default='color',
@@ -225,37 +226,31 @@ if __name__ == '__main__':
 
     '''
     generate txt and bbox for syn_background data
-    bbox annotation meet certain conditions: px_thres, whr_thres
+    bbox annotation meetz certain conditions: px_thres, whr_thres
+
+    px_thres: threshold for the length of edge lenght of b-box (at the margin)
+    whr_thres: threshold for width/height or height/width
+
     '''
-    # px_thres: threshold for the length of edge lenght of b-box (at the margin)
-    # whr_thres: threshold for width/height or height/width
     
-    px_thres= 30 # 23
-    whr_thres= 6 # 3
-    display_types = ['color'] # 'mixed'
+    # Generate synthetic labels for the images contained in the syn_data_dir
+    px_thres= 30
+    whr_thres= 6
+    display_types = ['color']
     cmt = 'wnd_syn'
     syn_args = get_args(cmt)
     for dt in display_types:
         group_object_annotation_and_draw_bbox(dt, px_thres, whr_thres)
 
-    
     '''
-    create paths for the syn data to copy and paste into other txt files
+    #draw bbox on rgb images for syn_background data. Not necessary to run
+    px_thres= 30 # 5 # 23 #20 #30
+    whr_thres= 6 # 3
+    display_types = ['color'] # 'mixed'
+    cmt = 'wnd_syn'
+    syn_args = get_args(cmt)
+    for dt in display_types:
+        draw_bbx_on_rgb_images(dt, px_thres, whr_thres)
     '''
-
-    #cmt = 'wnd_syn'
-    #syn_args = get_args(cmt)    
-    #create_paths(comment=cmt)
-
-    '''
-    draw bbox on rgb images for syn_background data
-    '''
-    #px_thres= 30 # 5 # 23 #20 #30
-    #whr_thres= 6 # 3
-    #display_types = ['color'] # 'mixed'
-    #cmt = 'wnd_syn'
-    #syn_args = get_args(cmt)
-    #for dt in display_types:
-    #    draw_bbx_on_rgb_images(dt, px_thres, whr_thres)
 
 
